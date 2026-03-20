@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "521342219868",
+    "project_id": "mostbeautiful-montathr",
+    "storage_bucket": "mostbeautiful-montathr.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:521342219868:android:790284240f69a0f6b15899",
+        "android_client_info": {
+          "package_name": "com.example.most_beautiful"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIeRxvx-QJtzvcSqZapZ_ZQuWdojlC-wE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
