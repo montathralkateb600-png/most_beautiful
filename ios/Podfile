@@ -1,16 +1,21 @@
 platform :ios, '13.0'
 
-# تأكد من أن التشفير في الأسفل هو LF
+# تعطيل التحقق من التوقيع مؤقتاً للبناء السحابي
 install! 'cocoapods', :deterministic_uuids => false
 
 target 'Runner' do
-  use_frameworks!
   use_modular_headers!
+  # استخدام الفريمورك بشكل صريح لمكتبات فايربيز
+  use_frameworks! :linkage => :static 
 
-  # هذا الجزء يبحث عن إضافات فلاتر بشكل ديناميكي
+  # تعريف المكتبات يدوياً لضمان عثور Xcode عليها
+  pod 'Firebase', :tag => '10.22.0'
   pod 'Firebase/Firestore'
-  pod 'Firebase/Core'
   pod 'Firebase/Auth'
+  pod 'Firebase/Core'
+  
+  # هذا السطر يبحث عن بقية إضافات فلاتر
+  # سنقوم بتعطيل استدعاء podhelper مؤقتاً واستخدام الربط المباشر
 end
 
 post_install do |installer|
@@ -18,7 +23,6 @@ post_install do |installer|
     target.build_configurations.each do |config|
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
       config.build_settings['ENABLE_BITCODE'] = 'NO'
-      # توحيد الهوية البرمجية
       config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.mostbeautiful.app'
     end
   end
