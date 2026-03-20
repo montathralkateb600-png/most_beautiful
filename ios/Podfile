@@ -1,9 +1,14 @@
+# الإصدار الأدنى لنظام iOS هو 12.0 ليتوافق مع Firebase
 platform :ios, '12.0'
+
+# هذا السطر يمنع حدوث مشاكل في التنسيق البرمجي عند البناء السحابي
+install! 'cocoapods', :deterministic_uuids => false
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
+  # هذه الوظيفة تقوم بتحميل جميع مكتبات فلاتر المطلوبة
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
@@ -11,7 +16,13 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
+      
+      # 1. إجبار جميع المكتبات على استخدام إصدار 12.0
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '12.0'
+      
+      # 2. إيقاف الـ BITCODE لمنع تعليق عملية البناء (هذا السطر الذي طلبته)
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      
     end
   end
 end
