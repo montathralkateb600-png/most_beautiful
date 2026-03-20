@@ -1,17 +1,25 @@
-# السطر الجديد الذي يشير للملف الذي صنعناه للتو
-load File.join(File.dirname(File.realpath(__FILE__)), 'Flutter', 'podhelper.rb')
-
 platform :ios, '13.0'
+
+# تأكد من أن التشفير في الأسفل هو LF
+install! 'cocoapods', :deterministic_uuids => false
 
 target 'Runner' do
   use_frameworks!
   use_modular_headers!
 
-  flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
+  # هذا الجزء يبحث عن إضافات فلاتر بشكل ديناميكي
+  pod 'Firebase/Firestore'
+  pod 'Firebase/Core'
+  pod 'Firebase/Auth'
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
-    flutter_additional_ios_build_settings(target)
+    target.build_configurations.each do |config|
+      config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      config.build_settings['ENABLE_BITCODE'] = 'NO'
+      # توحيد الهوية البرمجية
+      config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.mostbeautiful.app'
+    end
   end
 end
