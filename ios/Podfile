@@ -14,13 +14,24 @@ post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
     target.build_configurations.each do |config|
-      # إعدادات لضمان التوافق مع معالج M2 و Xcode الحديث
+      # 1. توحيد الإصدار
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
+      
+      # 2. تعطيل الـ Bitcode (إلزامي لمكتبات Firebase الحديثة)
       config.build_settings['ENABLE_BITCODE'] = 'NO'
+      
+      # 3. الحل السحري لخطأ -G:
+      # نقوم بإخبار Xcode بعدم إنتاج ملفات dSYM المعقدة في هذه المرحلة
+      config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf'
+      
+      # 4. منع المترجم من محاولة عمل "Index" أثناء البناء (يسرع العملية ويقلل الأخطاء)
+      config.build_settings['COMPILER_INDEX_STORE_ENABLE'] = 'NO'
+      
+      # 5. التأكد من هوية التطبيق
       config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.mostbeautiful.app'
       
-      # هذا السطر يحل مشكلة الخطأ -G وتعارضات المعالج
-      config.build_settings['DEBUG_INFORMATION_FORMAT'] = 'dwarf'
+      # 6. التوافق مع معمارية arm64 (M2)
+      config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
     end
   end
 end
