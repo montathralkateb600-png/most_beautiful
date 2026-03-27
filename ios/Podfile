@@ -1,32 +1,24 @@
-# 1. تحديد الإصدار
+# السطر الأول ضروري جداً لربط المجلد الذي ظهر عندك الآن
+require_relative 'Flutter/podhelper'
+
 platform :ios, '13.0'
 
-# 2. استدعاء ملف مساعد فلاتر (هذا السطر هو الذي كان ناقصاً)
-require_relative File.expand_path(File.join('..', 'Flutter', 'podhelper'), __FILE__)
-
-# 3. إعدادات الـ CocoaPods
 install! 'cocoapods', :deterministic_uuids => false
 
 target 'Runner' do
-  # استخدم الـ Static Linkage لحل مشاكل Firestore
   use_frameworks! :linkage => :static
   use_modular_headers!
 
-  # تحميل كل مكتبات فلاتر تلقائياً
   flutter_install_all_ios_pods File.dirname(File.realpath(__FILE__))
 end
 
 post_install do |installer|
   installer.pods_project.targets.each do |target|
     flutter_additional_ios_build_settings(target)
-    
     target.build_configurations.each do |config|
-      # توحيد الإعدادات والهوية
       config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = '13.0'
       config.build_settings['ENABLE_BITCODE'] = 'NO'
       config.build_settings['PRODUCT_BUNDLE_IDENTIFIER'] = 'com.mostbeautiful.app'
-      
-      # التوافق مع المعالجات الحديثة
       config.build_settings['ONLY_ACTIVE_ARCH'] = 'NO'
     end
   end
